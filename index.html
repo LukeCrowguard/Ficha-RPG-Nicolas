@@ -45,6 +45,8 @@
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .btn {
@@ -53,9 +55,11 @@
             color: #333; transition: 0.2s;
         }
         .btn:hover { background: #ddd; }
+        .btn-primary { background: var(--accent-color); color: white; border-color: #720e0e; }
+        .btn-primary:hover { background: #b01515; }
         .btn-danger { background: #e74c3c; color: white; border-color: #c0392b; }
         .btn-danger:hover { background: #c0392b; }
-        .btn-sm { padding: 2px 8px; font-size: 10px; margin-top: 5px; width: 100%; border-style: dashed;}
+        .btn-sm { padding: 2px 8px; font-size: 10px; margin-top: 5px; width: 100%; border-style: dashed; background: rgba(255,255,255,0.5);}
 
         .tabs { display: flex; gap: 10px; }
         .tab-btn {
@@ -238,6 +242,14 @@
 
         .features-box { flex-grow: 1; min-height: 300px; border: 1px solid var(--border-color); border-radius: 10px; background: white; padding: 10px; position: relative; }
 
+        /* Class Resources Styles */
+        .resource-row {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 4px 0; border-bottom: 1px dotted #ccc; position: relative;
+        }
+        .resource-name { flex-grow: 1; font-size: 11px; font-weight: bold; border: none; background: transparent; padding-right: 25px; }
+        .resource-controls { display: flex; align-items: center; gap: 5px; }
+        
         /* --- Spells Page --- */
         .spells-header { background: #333; color: white; padding: 15px; border-radius: 5px; display: flex; gap: 10px; text-align: center; margin-bottom: 20px;}
         .spell-stat { flex: 1; border-right: 1px solid #555; }
@@ -253,7 +265,6 @@
         .spell-lvl-box { border: 1px solid #ccc; border-radius: 5px; background: white; overflow: hidden; display: flex; flex-direction: column; }
         .spell-lvl-head { background: #eee; padding: 5px 10px; font-weight: bold; font-family: var(--header-font); font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
         
-        /* New Slot Config Styles */
         .slots-config { display: flex; align-items: center; gap: 8px; }
         .slot-input-sm { width: 35px; text-align: center; border: 1px solid #999; border-radius: 4px; font-weight: bold; font-size: 12px; }
         .slot-bubbles { display: flex; gap: 3px; }
@@ -262,12 +273,31 @@
         .label-xs { font-size: 10px; font-weight: bold; color: #555; text-transform: uppercase; }
 
         .spell-list { padding: 5px; flex-grow: 1; }
-        .spell-row { display: flex; align-items: center; border-bottom: 1px dotted #ddd; padding: 2px 0; }
+        .spell-row { display: flex; align-items: center; border-bottom: 1px dotted #ddd; padding: 2px 0; position: relative; }
+        
+        /* 5eTools Link Button */
+        .etools-link {
+            position: absolute; right: 5px; top: 50%; transform: translateY(-50%);
+            width: 16px; height: 16px; border-radius: 50%;
+            background: #eee; color: #333; display: flex; align-items: center; justify-content: center;
+            font-size: 10px; text-decoration: none; cursor: pointer; border: 1px solid #ccc;
+            opacity: 0.5; transition: 0.2s; z-index: 10;
+        }
+        .etools-link:hover { opacity: 1; background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+        /* Character Switcher */
+        .char-switcher {
+            display: flex; align-items: center; gap: 5px;
+            background: #e0e0e0; padding: 5px 10px; border-radius: 5px;
+            font-size: 12px; margin-left: auto;
+        }
+        .char-id-display { font-weight: bold; color: var(--accent-color); }
 
         @media print {
             .toolbar { display: none; }
             .sheet { display: block; margin: 0; box-shadow: none; padding: 0; page-break-after: always; width: 100%; max-width: none; }
             body { background: white; padding: 0; }
+            .etools-link { display: none; }
         }
     </style>
 </head>
@@ -282,7 +312,15 @@
             <button class="tab-btn" onclick="showPage('page3')">Magias</button>
         </div>
     </div>
-    <div style="display: flex; gap: 10px;">
+    
+    <div class="char-switcher">
+        <span>Ficha:</span>
+        <span id="charIdDisplay" class="char-id-display">Padrão</span>
+        <button class="btn btn-sm" style="margin:0; border:1px solid #999;" onclick="changeCharacter()">Mudar</button>
+    </div>
+
+    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button class="btn btn-primary" onclick="generateShareLink()" title="Gera um link longo com todos os dados atuais para enviar ao mestre">🔗 Gerar Link Compartilhável</button>
         <button class="btn" onclick="resetShort()">Descanso Curto</button>
         <button class="btn btn-danger" onclick="resetLong()">Descanso Longo</button>
         <button class="btn" onclick="manualSave()">💾 Salvar</button>
@@ -312,7 +350,8 @@
                 <div class="meta-field">
                     <select id="alignment">
                         <option value=""></option><option>LB</option><option>NB</option><option>CB</option>
-                        <option>LN</option><option>N</option><option>CN</option><option>LM</option><option>NM</option><option>CM</option>
+                        <option>LN</option><option>N</option><option>CN</option>
+                        <option>LM</option><option>NM</option><option>CM</option>
                     </select>
                     <div class="label-sm">Tendência</div>
                 </div>
@@ -410,6 +449,14 @@
             <div class="trait-box"><div class="trait-title">Ideais</div><textarea id="ideals" class="trait-text"></textarea></div>
             <div class="trait-box"><div class="trait-title">Vínculos</div><textarea id="bonds" class="trait-text"></textarea></div>
             <div class="trait-box"><div class="trait-title">Fraquezas</div><textarea id="flaws" class="trait-text"></textarea></div>
+            
+            <div class="box" style="margin-bottom: 10px; padding: 10px; background: #fafafa; border: 2px dashed #ccc;">
+                <div class="label-sm" style="text-align: center; margin-bottom: 5px;">Recursos de Classe & Habilidades</div>
+                <div class="label-xs" style="text-align: center; color: #888; margin-bottom: 10px;">(Canalizar Divindade, Fúria, Ki, etc.)</div>
+                <div id="classResourcesList"></div>
+                <button class="btn btn-sm" onclick="addResourceRow()">+ Adicionar Recurso</button>
+            </div>
+
             <div class="features-box"><div class="trait-title">Características e Talentos</div><textarea id="features" class="trait-text" style="height: 100%;"></textarea></div>
         </div>
     </div>
@@ -460,7 +507,13 @@
     <div class="spell-grid" id="spellContainer"></div>
 </div>
 
+<!-- LZ-String Library for Compression (Embedded) -->
+<script language="javascript">
+var LZString=function(){var r=String.fromCharCode,o="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",n="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$",e={};function t(r,o){if(!e[r]){e[r]={};for(var n=0;n<r.length;n++)e[r][r.charAt(n)]=n}return e[r][o]}var i={compressToBase64:function(r){if(null==r)return"";var n=i._compress(r,6,function(r){return o.charAt(r)});switch(n.length%4){default:case 0:return n;case 1:return n+"===";case 2:return n+"==";case 3:return n+"="}},decompressFromBase64:function(r){return null==r?"":""==r?null:i._decompress(r.length,32,function(n){return t(o,r.charAt(n))})},compressToUTF16:function(o){return null==o?"":i._compress(o,15,function(o){return r(o+32)})+" "},decompressFromUTF16:function(o){return null==o?"":""==o?null:i._decompress(o.length,16384,function(n){return o.charCodeAt(n)-32})},compressToUint8Array:function(r){for(var o=i.compress(r),n=new Uint8Array(2*o.length),e=0,t=o.length;t>e;e++){var a=o.charCodeAt(e);n[2*e]=a>>>8,n[2*e+1]=a%256}return n},decompressFromUint8Array:function(o){if(null===o||void 0===o)return i.decompress(o);for(var n=new Array(o.length/2),e=0,t=n.length;t>e;e++)n[e]=256*o[2*e]+o[2*e+1];var a=[];return n.forEach(function(o){a.push(r(o))}),i.decompress(a.join(""))},compressToEncodedURIComponent:function(r){return null==r?"":i._compress(r,6,function(r){return n.charAt(r)})},decompressFromEncodedURIComponent:function(r){return null==r?"":""==r?null:r=r.replace(/ /g,"+")?i._decompress(r.length,32,function(o){return t(n,r.charAt(o))}):null},compress:function(o){return i._compress(o,16,function(o){return r(o)})},_compress:function(r,o,n){if(null==r)return"";var e,t,i,a={},p={},c="",u="",s="",l=2,f=3,h=2,d=[],m=0,v=0;for(i=0;i<r.length;i+=1)if(c=r.charAt(i),Object.prototype.hasOwnProperty.call(a,c)||(a[c]=f++,p[c]=!0),u=s+c,Object.prototype.hasOwnProperty.call(a,u))s=u;else{if(Object.prototype.hasOwnProperty.call(p,s)){if(s.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=s.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=s.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[s]}else for(t=a[s],e=0;h>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++),a[u]=f++,s=String(c)}if(""!==s){if(Object.prototype.hasOwnProperty.call(p,s)){if(s.charCodeAt(0)<256){for(e=0;h>e;e++)m<<=1,v==o-1?(v=0,d.push(n(m)),m=0):v++;for(t=s.charCodeAt(0),e=0;8>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}else{for(t=1,e=0;h>e;e++)m=m<<1|t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t=0;for(t=s.charCodeAt(0),e=0;16>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1}l--,0==l&&(l=Math.pow(2,h),h++),delete p[s]}else for(t=a[s],e=0;h>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;l--,0==l&&(l=Math.pow(2,h),h++),a[u]=f++}for(t=2,e=0;h>e;e++)m=m<<1|1&t,v==o-1?(v=0,d.push(n(m)),m=0):v++,t>>=1;for(;;){if(m<<=1,v==o-1){d.push(n(m));break}v++}return d.join("")},decompress:function(r){return null==r?"":""==r?null:i._decompress(r.length,32768,function(o){return r.charCodeAt(o)})},_decompress:function(r,o,n){var e,t,i,a,p,c,u,s=[],l=4,f=4,h=3,d="",m=[],v={val:n(0),position:o,index:1};for(e=0;3>e;e+=1)s[e]=e;for(i=0,p=Math.pow(2,2),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;switch(e=i){case 0:for(i=0,p=Math.pow(2,8),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;u=String.fromCharCode(i);break;case 1:for(i=0,p=Math.pow(2,16),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;u=String.fromCharCode(i);break;case 2:return""}for(s[3]=u,t=u,m.push(u);;){if(v.index>r)return"";for(i=0,p=Math.pow(2,h),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;switch(u=i){case 0:for(i=0,p=Math.pow(2,8),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;s[f++]=String.fromCharCode(i),u=f-1,l--;break;case 1:for(i=0,p=Math.pow(2,16),c=1;c!=p;)a=v.val&v.position,v.position>>=1,0==v.position&&(v.position=o,v.val=n(v.index++)),i|=(a>0?1:0)*c,c<<=1;s[f++]=String.fromCharCode(i),u=f-1,l--;break;case 2:return m.join("")}if(0==l&&(l=Math.pow(2,h),h++),s[u])d=s[u];else{if(u!==f)return null;d=t+t.charAt(0)}m.push(d),s[f++]=t+d.charAt(0),t=d,l--,0==l&&(l=Math.pow(2,h),h++)}}};return i}();
+</script>
+
 <script>
+    // --- Global Config ---
     const attrs = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const attrNames = {str:'Força', dex:'Destreza', con:'Constituição', int:'Inteligência', wis:'Sabedoria', cha:'Carisma'};
     const skills = [
@@ -475,13 +528,91 @@
         {id:'religion', name:'Religião', at:'int'}, {id:'survival', name:'Sobrevivência', at:'wis'}
     ];
 
+    let currentSheetId = "default";
+
     window.onload = function() {
-        buildUI();
-        loadLocal();
-        recalc();
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // 1. Check for shared data via 'data' param (Shared Link)
+        const encodedData = urlParams.get('data');
+        if (encodedData) {
+            // If data is in URL, we are in "Viewer/Import" mode
+            // We load it, but we also save it locally under a temp ID or unique ID so the user can keep it
+            try {
+                const decompressed = LZString.decompressFromEncodedURIComponent(encodedData);
+                const jsonData = JSON.parse(decompressed);
+                // Use the character name from data as ID, or default
+                if(jsonData.vals && jsonData.vals['charName']) {
+                    currentSheetId = jsonData.vals['charName'].replace(/\s+/g, '_').toLowerCase();
+                } else {
+                    currentSheetId = "shared_" + Date.now();
+                }
+                
+                // We don't save immediately to avoid overwriting if user just wanted to look
+                // But to render, we must populate.
+                // Let's populate UI directly then save to local
+                buildUI();
+                applyData(jsonData);
+                saveLocal(); // Persist the shared sheet locally
+                
+                // Clean URL so it looks nice? No, keep it so refresh works.
+                document.getElementById('charIdDisplay').textContent = currentSheetId + " (Link)";
+            } catch(e) {
+                console.error("Erro ao carregar dados do link", e);
+                alert("Erro ao carregar link compartilhado.");
+                initDefault();
+            }
+        } else {
+            // 2. Normal Local Load
+            const idParam = urlParams.get('id');
+            if (idParam) currentSheetId = idParam;
+            initDefault();
+        }
+        
         setupEvents();
     };
 
+    function initDefault() {
+        document.getElementById('charIdDisplay').textContent = currentSheetId;
+        buildUI();
+        loadLocal();
+        recalc();
+    }
+
+    function changeCharacter() {
+        const newId = prompt("Digite o nome/ID do personagem que deseja abrir ou criar (Ex: 'guerreiro', 'mago'):");
+        if (newId && newId.trim() !== "") {
+            const url = new URL(window.location);
+            url.searchParams.delete('data'); // Clear shared data if any
+            url.searchParams.set('id', newId.trim());
+            window.location.href = url.toString();
+        }
+    }
+
+    // --- SHARE FUNCTION ---
+    function generateShareLink() {
+        saveLocal(); // Ensure latest state is captured
+        const storageKey = 'dndSheet_' + currentSheetId;
+        const jsonStr = localStorage.getItem(storageKey);
+        
+        if (!jsonStr) {
+            alert("Nada para compartilhar!");
+            return;
+        }
+
+        const compressed = LZString.compressToEncodedURIComponent(jsonStr);
+        const url = new URL(window.location.href);
+        url.search = `?data=${compressed}`;
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(url.toString()).then(() => {
+            alert("Link copiado para a área de transferência! Envie para o seu Mestre.");
+        }).catch(err => {
+            prompt("Copie este link:", url.toString());
+        });
+    }
+
+    // --- BUILD UI ---
     function buildUI() {
         const st = document.getElementById('statsStrip');
         attrs.forEach(a => {
@@ -502,7 +633,7 @@
         for(let i=0; i<5; i++) { addAtkRow(i); }
 
         const spc = document.getElementById('spellContainer');
-        spc.innerHTML += `<div class="spell-lvl-box" id="spellBox0"><div class="spell-lvl-head">Truques (0)</div><div class="spell-list" id="spellList0">${Array(8).fill(0).map((_,i)=>`<div class="spell-row" id="row_0_${i}"><input id="cantrip${i}" style="font-size:11px;"></div>`).join('')}</div><button class="btn-sm" onclick="addSpellRow(0)">+ Adicionar</button></div>`;
+        spc.innerHTML += `<div class="spell-lvl-box" id="spellBox0"><div class="spell-lvl-head">Truques (0)</div><div class="spell-list" id="spellList0">${Array(8).fill(0).map((_,i)=>`<div class="spell-row" id="row_0_${i}"><input id="cantrip${i}" style="font-size:11px;" oninput="updateLink(this, 'spell')"></div>`).join('')}</div><button class="btn-sm" onclick="addSpellRow(0)">+ Adicionar</button></div>`;
         
         for(let i=1; i<=9; i++) {
             spc.innerHTML += `
@@ -519,22 +650,80 @@
                 <button class="btn-sm" onclick="addSpellRow(${i})">+ Adicionar</button>
             </div>`;
         }
+        
+        addResourceRow();
     }
     
+    // --- Smart Links Logic ---
+    function updateLink(input, type) {
+        const parent = input.parentElement;
+        let btn = parent.querySelector('.etools-link');
+        
+        if (!input.value) {
+            if (btn) btn.remove();
+            return;
+        }
+
+        if (!btn) {
+            btn = document.createElement('a');
+            btn.className = 'etools-link';
+            btn.innerHTML = '🔗';
+            btn.target = '_blank';
+            parent.appendChild(btn);
+        }
+
+        const term = input.value.trim().replace(/\s+/g, '%20');
+        btn.href = `https://2014.5e.tools/search.html?q=${term}`;
+    }
+
+    // --- Resource Functions ---
+    function addResourceRow() {
+        const container = document.getElementById('classResourcesList');
+        const idx = container.children.length;
+        const row = document.createElement('div');
+        row.className = 'resource-row';
+        row.id = `resRow_${idx}`;
+        row.innerHTML = `
+            <input type="text" class="resource-name" id="resName_${idx}" placeholder="Nome (Ex: Fúria)" oninput="updateLink(this, 'resource')">
+            <div class="resource-controls">
+                <input type="number" class="slot-input-sm" id="resTotal_${idx}" value="0" min="0" onchange="updateResBubbles(${idx})">
+                <div class="slot-bubbles" id="resBubbles_${idx}"></div>
+            </div>
+        `;
+        container.appendChild(row);
+        updateResBubbles(idx);
+        saveLocal();
+    }
+
+    function updateResBubbles(idx) {
+        const total = parseInt(document.getElementById(`resTotal_${idx}`).value) || 0;
+        const container = document.getElementById(`resBubbles_${idx}`);
+        const currentUsed = [];
+        container.querySelectorAll('.slot-bubble').forEach((el, i) => {
+            if(el.classList.contains('used')) currentUsed.push(i);
+        });
+        container.innerHTML = '';
+        for(let i=0; i<total; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = `slot-bubble ${currentUsed.includes(i) ? 'used' : ''}`;
+            bubble.id = `resBubble_${idx}_${i}`; 
+            bubble.onclick = function() { this.classList.toggle('used'); saveLocal(); };
+            container.appendChild(bubble);
+        }
+        saveLocal();
+    }
+
     function renderSpellRow(lvl, idx) {
-        return `<div class="spell-row" id="row_${lvl}_${idx}"><div class="marker" id="prep_${lvl}_${idx}" data-val="0" onclick="toggleMarker(this, 1)" style="width:8px; height:8px; margin-right:5px;"></div><input id="spell_${lvl}_${idx}" style="font-size:11px;"></div>`;
+        return `<div class="spell-row" id="row_${lvl}_${idx}"><div class="marker" id="prep_${lvl}_${idx}" data-val="0" onclick="toggleMarker(this, 1)" style="width:8px; height:8px; margin-right:5px;"></div><input id="spell_${lvl}_${idx}" style="font-size:11px;" oninput="updateLink(this, 'spell')"></div>`;
     }
 
     function updateSlots(lvl) {
         const total = parseInt(document.getElementById(`slotsTotal${lvl}`).value) || 0;
         const container = document.getElementById(`slotsBubbles${lvl}`);
-        
-        // Preserve state if possible
         const currentUsed = [];
         container.querySelectorAll('.slot-bubble').forEach((el, idx) => {
             if(el.classList.contains('used')) currentUsed.push(idx);
         });
-
         container.innerHTML = '';
         for(let i=0; i<total; i++) {
             const bubble = document.createElement('div');
@@ -558,7 +747,7 @@
         const tbody = document.getElementById('atkRows');
         const i = (typeof idxOverride === 'number') ? idxOverride : tbody.children.length;
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td><input class="atk-input" id="atkN${i}"></td><td><input class="atk-input" id="atkB${i}" style="text-align:center;"></td><td><input class="atk-input" id="atkD${i}"></td>`;
+        tr.innerHTML = `<td><input class="atk-input" id="atkN${i}" oninput="updateLink(this, 'resource')"></td><td><input class="atk-input" id="atkB${i}" style="text-align:center;"></td><td><input class="atk-input" id="atkD${i}"></td>`;
         tbody.appendChild(tr);
         if(typeof idxOverride !== 'number') saveLocal();
     }
@@ -579,13 +768,10 @@
     }
 
     function recalc() {
-        // PB: Soma todos os números encontrados no campo (Multiclasse)
         const lvlStr = document.getElementById('classLevel').value || "";
         const matches = lvlStr.match(/\d+/g);
         let lvl = 0;
-        if (matches) {
-            matches.forEach(m => lvl += parseInt(m));
-        }
+        if (matches) { matches.forEach(m => lvl += parseInt(m)); }
         if (lvl === 0) lvl = 1;
 
         let pb = 2;
@@ -676,13 +862,19 @@
         });
     }
 
+    /* PERSISTENCE using unique ID key */
     function saveLocal(imgDataOverride) {
-        const data = { vals: {}, markers: {}, slots: [], charImage: null, manual: {} };
+        // If we are viewing a shared link (?data=...), do NOT save to that URL params (impossible).
+        // Instead, save to local storage under the current ID.
+        
+        const data = { vals: {}, markers: {}, slots: [], charImage: null, manual: {}, resources: [] };
         document.querySelectorAll('input, textarea, select').forEach(el => { 
-            if(el.id && el.id !== 'fileUp' && el.id !== 'imgInput') data.vals[el.id] = el.value; 
+            if(el.id && el.id !== 'fileUp' && el.id !== 'imgInput' && !el.id.startsWith('res')) data.vals[el.id] = el.value; 
         });
         document.querySelectorAll('.marker').forEach(el => { if(el.id) data.markers[el.id] = el.dataset.val; });
-        document.querySelectorAll('.slot-bubble.used').forEach(el => data.slots.push(el.id));
+        document.querySelectorAll('.slot-bubble.used').forEach(el => {
+            if(!el.id.startsWith('resBubble')) data.slots.push(el.id);
+        });
         
         if(document.getElementById('spellDC').dataset.manual === "true") data.manual['spellDC'] = true;
         if(document.getElementById('spellAtk').dataset.manual === "true") data.manual['spellAtk'] = true;
@@ -696,20 +888,32 @@
             if(bg && bg.startsWith('url')) data.charImage = bg.slice(5, -2);
         }
 
-        localStorage.setItem('dndSheetOfficial', JSON.stringify(data));
+        const resContainer = document.getElementById('classResourcesList');
+        for(let i=0; i<resContainer.children.length; i++) {
+            const name = document.getElementById(`resName_${i}`).value;
+            const total = document.getElementById(`resTotal_${i}`).value;
+            const used = [];
+            const bubbleCont = document.getElementById(`resBubbles_${i}`);
+            bubbleCont.querySelectorAll('.slot-bubble.used').forEach((b, bIdx) => used.push(bIdx));
+            data.resources.push({ name, total, used });
+        }
+
+        // USE UNIQUE KEY
+        const storageKey = 'dndSheet_' + currentSheetId;
+        localStorage.setItem(storageKey, JSON.stringify(data));
     }
     
     function manualSave() { saveLocal(); alert("Ficha salva no navegador com sucesso!"); }
 
     function loadLocal() {
-        const d = localStorage.getItem('dndSheetOfficial');
+        const storageKey = 'dndSheet_' + currentSheetId;
+        const d = localStorage.getItem(storageKey);
         if(d) applyData(JSON.parse(d));
     }
     
     function applyData(d) {
         if(!d) return;
         
-        // Dynamic Rows
         let maxSpells = {}; let maxAtk = 4;
         const allKeys = [...Object.keys(d.vals || {}), ...Object.keys(d.markers || {})];
         allKeys.forEach(k => {
@@ -741,16 +945,45 @@
             }
         }
 
-        // Fill Data
         for(let k in d.vals) { const el=document.getElementById(k); if(el) el.value=d.vals[k]; }
         
-        // Re-generate bubbles based on loaded slot totals
         for(let i=1; i<=9; i++) { updateSlots(i); }
 
         for(let k in d.markers) { const el=document.getElementById(k); if(el) el.dataset.val=d.markers[k]; }
         document.querySelectorAll('.slot-bubble').forEach(e => e.classList.remove('used'));
         if(d.slots) d.slots.forEach(id => { const el=document.getElementById(id); if(el) el.classList.add('used'); });
         
+        if(d.resources) {
+            const resContainer = document.getElementById('classResourcesList');
+            resContainer.innerHTML = ''; 
+            d.resources.forEach((r, idx) => {
+                const row = document.createElement('div');
+                row.className = 'resource-row';
+                row.id = `resRow_${idx}`;
+                row.innerHTML = `
+                    <input type="text" class="resource-name" id="resName_${idx}" placeholder="Nome (Ex: Fúria)" value="${r.name}" oninput="updateLink(this, 'resource')">
+                    <div class="resource-controls">
+                        <input type="number" class="slot-input-sm" id="resTotal_${idx}" value="${r.total}" min="0" onchange="updateResBubbles(${idx})">
+                        <div class="slot-bubbles" id="resBubbles_${idx}"></div>
+                    </div>
+                `;
+                resContainer.appendChild(row);
+                if(r.name) {
+                    const inp = document.getElementById(`resName_${idx}`);
+                    updateLink(inp, 'resource');
+                }
+                
+                const container = document.getElementById(`resBubbles_${idx}`);
+                for(let i=0; i<parseInt(r.total); i++) {
+                    const bubble = document.createElement('div');
+                    bubble.className = `slot-bubble ${r.used.includes(i) ? 'used' : ''}`;
+                    bubble.id = `resBubble_${idx}_${i}`; 
+                    bubble.onclick = function() { this.classList.toggle('used'); saveLocal(); };
+                    container.appendChild(bubble);
+                }
+            });
+        }
+
         if(d.manual) {
             ['spellDC', 'spellAtk', 'init'].forEach(id => {
                 if(d.manual[id]) {
@@ -766,14 +999,24 @@
             container.style.backgroundImage = `url(${d.charImage})`;
             document.getElementById('imgPlaceholder').style.display = 'none';
         }
+        
+        document.querySelectorAll('input[id^="spell_"]').forEach(el => {
+            if(el.value) updateLink(el, 'spell');
+        });
+        document.querySelectorAll('input[id^="cantrip"]').forEach(el => {
+            if(el.value) updateLink(el, 'spell');
+        });
+        document.querySelectorAll('input[id^="atkN"]').forEach(el => {
+            if(el.value) updateLink(el, 'resource');
+        });
 
         recalc();
     }
     
     function saveJSON() {
         saveLocal();
-        const d = localStorage.getItem('dndSheetOfficial');
-        const n = document.getElementById('charName').value || 'Personagem';
+        const d = localStorage.getItem('dndSheet_' + currentSheetId);
+        const n = document.getElementById('charName').value || currentSheetId;
         const b = new Blob([d], {type:'application/json'});
         const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = n+'.json'; a.click();
     }
@@ -785,15 +1028,16 @@
         r.readAsText(f);
     }
 
-    function resetShort() { if(confirm("Descanso Curto: Recuperar Magias de Bruxo e Habilidades?")) { saveLocal(); } }
+    function resetShort() { if(confirm("Descanso Curto: Recuperar Recursos de Classe (Regra Bruxo/Monge) e Magias?")) { saveLocal(); } }
     
     function resetLong() {
-        if(confirm("Descanso Longo: Recuperar PV, Slots e Metade dos DV?")) {
+        if(confirm("Descanso Longo: Recuperar PV, Slots, Recursos e Metade dos DV?")) {
             const max = document.getElementById('hpMax').value;
             if(max) document.getElementById('hpCurrent').value = max;
             document.getElementById('hpTemp').value = '';
             
-            document.querySelectorAll('.slot-bubble').forEach(e => e.classList.remove('used'));
+            document.querySelectorAll('div[id^="slot_"]').forEach(e => e.classList.remove('used'));
+            document.querySelectorAll('div[id^="resBubble_"]').forEach(e => e.classList.remove('used'));
             
             const hdTotalStr = document.getElementById('hdTotal').value;
             const hdCurrentEl = document.getElementById('hdCurrent');
