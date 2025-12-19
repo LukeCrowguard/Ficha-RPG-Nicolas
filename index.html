@@ -85,7 +85,6 @@
         input:focus, textarea:focus, select:focus { outline: none; background: rgba(0,0,0,0.05); }
         textarea { resize: none; }
         
-        /* Input Manual Override State */
         input.manual-override {
             background-color: #fffbe6;
             border-bottom: 1px dashed #e6c100 !important;
@@ -101,7 +100,7 @@
             background: white; padding: 5px; position: relative;
         }
 
-        /* --- Header Redesigned --- */
+        /* --- Header --- */
         .header-main {
             display: flex;
             gap: 20px;
@@ -109,7 +108,6 @@
             align-items: stretch;
         }
 
-        /* Image Box Styles */
         .char-image-box {
             width: 220px; 
             min-height: 200px;
@@ -155,11 +153,11 @@
         .meta-field { display: flex; flex-direction: column-reverse; }
         .meta-field input, .meta-field select { border-bottom: 1px solid #aaa; font-size: 13px; padding: 2px 0; }
 
-        /* --- 3 Column Layout (Official Style) --- */
+        /* --- 3 Column Layout --- */
         .sheet-body {
             display: grid;
-            grid-template-columns: 32% 34% 32%; /* Standard proportions */
-            gap: 1%; /* Small gaps */
+            grid-template-columns: 32% 34% 32%;
+            gap: 1%;
             align-items: start;
         }
 
@@ -168,7 +166,6 @@
         .stats-strip { width: 70px; display: flex; flex-direction: column; gap: 15px; }
         .skills-col { flex-grow: 1; display: flex; flex-direction: column; gap: 10px; }
 
-        /* Inverted Attributes Styles */
         .ability-box {
             border: 1px solid var(--border-color); border-radius: 10px; text-align: center;
             background: white; position: relative; padding: 5px 0 15px 0;
@@ -176,18 +173,10 @@
         }
         .ability-label { font-weight: bold; font-size: 9px; color: #555; margin-bottom: 2px; }
         
-        /* Score Big (Input) */
         .ability-score-big { 
-            font-family: var(--body-font); 
-            font-size: 30px; 
-            width: 100%;
-            text-align: center;
-            border: none;
-            background: transparent;
-            margin-bottom: 5px;
+            font-family: var(--body-font); font-size: 30px; width: 100%; text-align: center;
+            border: none; background: transparent; margin-bottom: 5px;
         }
-        
-        /* Mod Small (Oval) */
         .ability-mod-oval {
             width: 34px; height: 22px; 
             border: 1px solid var(--border-color); border-radius: 12px;
@@ -199,7 +188,6 @@
 
         .insp-box { border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; display: flex; align-items: center; justify-content: space-between; background: white; }
         .prof-box { border: 1px solid var(--border-color); border-radius: 10px; padding: 5px; display: flex; align-items: center; justify-content: space-between; background: white; margin-bottom: 10px;}
-        
         .prof-val { font-size: 16px; font-weight: bold; border: 1px solid #555; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; margin-right: 5px; }
 
         .skill-container { border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; background: white; font-size: 11px; }
@@ -213,7 +201,6 @@
         .marker[data-val="2"] { background: #333; box-shadow: 0 0 0 2px #fff, 0 0 0 3px #333; }
 
         .passive-perc { border: 1px solid var(--border-color); border-radius: 20px; padding: 5px 15px; margin-top: 10px; display: flex; align-items: center; background: white; font-size: 11px; color: #555; }
-        
         .langs-box { border: 1px solid var(--border-color); border-radius: 10px; padding: 10px; background: white; margin-top: 10px; flex-grow: 1; min-height: 150px; display: flex; flex-direction: column; }
 
         /* --- Col 2: Combat --- */
@@ -265,9 +252,15 @@
         .spell-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
         .spell-lvl-box { border: 1px solid #ccc; border-radius: 5px; background: white; overflow: hidden; display: flex; flex-direction: column; }
         .spell-lvl-head { background: #eee; padding: 5px 10px; font-weight: bold; font-family: var(--header-font); font-size: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .spell-slots-bubbles { display: flex; gap: 3px; }
-        .slot-bubble { width: 12px; height: 12px; border: 1px solid #555; border-radius: 50%; cursor: pointer; background: white; }
+        
+        /* New Slot Config Styles */
+        .slots-config { display: flex; align-items: center; gap: 8px; }
+        .slot-input-sm { width: 35px; text-align: center; border: 1px solid #999; border-radius: 4px; font-weight: bold; font-size: 12px; }
+        .slot-bubbles { display: flex; gap: 3px; }
+        .slot-bubble { width: 14px; height: 14px; border: 1px solid #555; border-radius: 50%; cursor: pointer; background: white; }
         .slot-bubble.used { background: var(--accent-color); border-color: var(--accent-color); }
+        .label-xs { font-size: 10px; font-weight: bold; color: #555; text-transform: uppercase; }
+
         .spell-list { padding: 5px; flex-grow: 1; }
         .spell-row { display: flex; align-items: center; border-bottom: 1px dotted #ddd; padding: 2px 0; }
 
@@ -301,21 +294,16 @@
 
 <!-- ================= PAGE 1 ================= -->
 <div id="page1" class="sheet active">
-    <!-- Header with Big Image Layout -->
     <div class="header-main">
-        <!-- Left: Image Portrait -->
         <div class="char-image-box" id="charImageContainer" onclick="document.getElementById('imgInput').click()">
             <span id="imgPlaceholder">Imagem do Personagem<br>(Clique para alterar)</span>
             <input type="file" id="imgInput" style="display: none;" accept="image/*" onchange="uploadImage(this)">
         </div>
-
-        <!-- Right: Text Info -->
         <div class="header-text-col">
             <div class="char-name-block">
                 <input type="text" class="char-name-input sync-name" id="charName">
                 <div class="label-sm">Nome do Personagem</div>
             </div>
-            
             <div class="meta-grid">
                 <div class="meta-field"><input type="text" id="classLevel" onchange="recalc()"><div class="label-sm">Classe & Nível</div></div>
                 <div class="meta-field"><input type="text" id="background"><div class="label-sm">Antecedentes</div></div>
@@ -324,8 +312,7 @@
                 <div class="meta-field">
                     <select id="alignment">
                         <option value=""></option><option>LB</option><option>NB</option><option>CB</option>
-                        <option>LN</option><option>N</option><option>CN</option>
-                        <option>LM</option><option>NM</option><option>CM</option>
+                        <option>LN</option><option>N</option><option>CN</option><option>LM</option><option>NM</option><option>CM</option>
                     </select>
                     <div class="label-sm">Tendência</div>
                 </div>
@@ -334,41 +321,30 @@
         </div>
     </div>
 
-    <!-- Official 3 Column Layout -->
     <div class="sheet-body">
-        
-        <!-- COL 1: Stats & Skills -->
         <div class="col-1">
-            <div class="stats-strip" id="statsStrip">
-                <!-- Generated by JS: Now with Big Score / Small Mod -->
-            </div>
-            
+            <div class="stats-strip" id="statsStrip"></div>
             <div class="skills-col">
                 <div class="insp-box">
                     <input type="number" id="inspiration" style="width: 40px; height: 35px; font-size: 20px; font-weight: bold; text-align: center; border: 1px solid #777; border-radius: 5px;" placeholder="0">
                     <div class="label-sm" style="margin-left: 5px;">Inspiração</div>
                 </div>
-                
                 <div class="prof-box">
                     <div class="prof-val" id="profBonus">+2</div>
                     <div class="label-sm">Bônus de<br>Proficiência</div>
                 </div>
-
                 <div class="skill-container">
                     <div class="label-sm" style="text-align: center; margin-bottom: 5px;">Testes de Resistência</div>
                     <div id="savesList"></div>
                 </div>
-
                 <div class="skill-container">
                     <div class="label-sm" style="text-align: center; margin-bottom: 5px;">Perícias</div>
                     <div id="skillsList"></div>
                 </div>
-
                 <div class="passive-perc">
                     <span style="font-weight: bold; font-size: 14px; margin-right: 10px;" id="passivePerc">10</span>
                     Sabedoria Passiva (Percepção)
                 </div>
-
                 <div class="langs-box">
                     <div class="label-sm">Outras Proficiências & Idiomas</div>
                     <textarea id="langs" style="margin-top: 5px; height: 100%;"></textarea>
@@ -376,29 +352,21 @@
             </div>
         </div>
 
-        <!-- COL 2: Combat -->
         <div class="col-2">
             <div class="combat-header">
                 <div class="combat-stat"><input type="text" class="combat-val" id="ac" value="10"><div class="label-sm">Classe Armadura</div></div>
-                <!-- Initiative is now auto-calculated but editable -->
-                <div class="combat-stat">
-                    <input type="text" class="combat-val" id="init" value="0" oninput="toggleManual('init')">
-                    <div class="label-sm">Iniciativa</div>
-                </div>
+                <div class="combat-stat"><input type="text" class="combat-val" id="init" value="0" oninput="toggleManual('init')"><div class="label-sm">Iniciativa</div></div>
                 <div class="combat-stat"><input type="text" class="combat-val" id="speed" value="9m"><div class="label-sm">Deslocamento</div></div>
             </div>
-
             <div class="hp-box">
                 <div class="hp-top"><span>Pontos de Vida Máximos</span><input type="number" id="hpMax" style="width: 50px; text-align: right; border-bottom: 1px solid #ccc;"></div>
                 <input type="number" id="hpCurrent" class="hp-big" placeholder="Atual">
                 <div class="label-sm" style="text-align: center;">Pontos de Vida Atuais</div>
             </div>
-
             <div class="hp-box">
                 <input type="number" id="hpTemp" class="hp-big" placeholder="Temp" style="font-size: 20px;">
                 <div class="label-sm" style="text-align: center;">Pontos de Vida Temporários</div>
             </div>
-
             <div class="hd-ds-row">
                 <div class="hp-box" style="flex: 1;">
                     <div class="label-sm">Dados de Vida</div>
@@ -409,25 +377,10 @@
                 </div>
                 <div class="hp-box" style="flex: 1;">
                     <div class="label-sm" style="text-align: center; margin-bottom: 2px;">Testes de Morte</div>
-                    <div class="ds-row">
-                        <span>Sucessos</span>
-                        <div class="ds-bubbles">
-                            <div class="marker" id="dsS1" onclick="toggleMarker(this, 1)"></div>
-                            <div class="marker" id="dsS2" onclick="toggleMarker(this, 1)"></div>
-                            <div class="marker" id="dsS3" onclick="toggleMarker(this, 1)"></div>
-                        </div>
-                    </div>
-                    <div class="ds-row">
-                        <span>Falhas</span>
-                        <div class="ds-bubbles">
-                            <div class="marker" id="dsF1" onclick="toggleMarker(this, 1)"></div>
-                            <div class="marker" id="dsF2" onclick="toggleMarker(this, 1)"></div>
-                            <div class="marker" id="dsF3" onclick="toggleMarker(this, 1)"></div>
-                        </div>
-                    </div>
+                    <div class="ds-row"><span>Sucessos</span><div class="ds-bubbles"><div class="marker" id="dsS1" onclick="toggleMarker(this, 1)"></div><div class="marker" id="dsS2" onclick="toggleMarker(this, 1)"></div><div class="marker" id="dsS3" onclick="toggleMarker(this, 1)"></div></div></div>
+                    <div class="ds-row"><span>Falhas</span><div class="ds-bubbles"><div class="marker" id="dsF1" onclick="toggleMarker(this, 1)"></div><div class="marker" id="dsF2" onclick="toggleMarker(this, 1)"></div><div class="marker" id="dsF3" onclick="toggleMarker(this, 1)"></div></div></div>
                 </div>
             </div>
-
             <div class="attacks-box">
                 <div class="label-sm" style="text-align: center; margin-bottom: 5px;">Ataques e Magias</div>
                 <table class="atk-table">
@@ -437,7 +390,6 @@
                 <button class="btn btn-sm" onclick="addAtkRow()">+ Adicionar Arma</button>
                 <textarea id="atkNotes" style="flex-grow: 1; border-top: 1px solid #eee; margin-top: 5px; padding: 5px;" placeholder="Notas..."></textarea>
             </div>
-
             <div class="equip-row">
                 <div class="coins-col">
                     <div class="coin-box"><div class="coin-label">PC</div><input type="text" id="cp" class="coin-val"></div>
@@ -453,28 +405,12 @@
             </div>
         </div>
 
-        <!-- COL 3: Traits -->
         <div class="col-3">
-            <div class="trait-box">
-                <div class="trait-title">Traços de Personalidade</div>
-                <textarea id="traits" class="trait-text"></textarea>
-            </div>
-            <div class="trait-box">
-                <div class="trait-title">Ideais</div>
-                <textarea id="ideals" class="trait-text"></textarea>
-            </div>
-            <div class="trait-box">
-                <div class="trait-title">Vínculos</div>
-                <textarea id="bonds" class="trait-text"></textarea>
-            </div>
-            <div class="trait-box">
-                <div class="trait-title">Fraquezas</div>
-                <textarea id="flaws" class="trait-text"></textarea>
-            </div>
-            <div class="features-box">
-                <div class="trait-title">Características e Talentos</div>
-                <textarea id="features" class="trait-text" style="height: 100%;"></textarea>
-            </div>
+            <div class="trait-box"><div class="trait-title">Traços de Personalidade</div><textarea id="traits" class="trait-text"></textarea></div>
+            <div class="trait-box"><div class="trait-title">Ideais</div><textarea id="ideals" class="trait-text"></textarea></div>
+            <div class="trait-box"><div class="trait-title">Vínculos</div><textarea id="bonds" class="trait-text"></textarea></div>
+            <div class="trait-box"><div class="trait-title">Fraquezas</div><textarea id="flaws" class="trait-text"></textarea></div>
+            <div class="features-box"><div class="trait-title">Características e Talentos</div><textarea id="features" class="trait-text" style="height: 100%;"></textarea></div>
         </div>
     </div>
 </div>
@@ -482,15 +418,9 @@
 <!-- ================= PAGE 2: BIO ================= -->
 <div id="page2" class="sheet">
     <div class="header-main">
-        <div class="char-name-block">
-            <input type="text" class="char-name-input sync-name">
-            <div class="label-sm">Nome do Personagem</div>
-        </div>
-        <div style="display: flex; align-items: flex-end; padding-bottom: 10px; font-size: 24px; font-family: var(--header-font);">
-            Biografia
-        </div>
+        <div class="char-name-block"><input type="text" class="char-name-input sync-name"><div class="label-sm">Nome do Personagem</div></div>
+        <div style="display: flex; align-items: flex-end; padding-bottom: 10px; font-size: 24px; font-family: var(--header-font);">Biografia</div>
     </div>
-
     <div class="meta-grid" style="grid-template-columns: repeat(6, 1fr); margin-bottom: 20px;">
         <div class="meta-field"><input type="text" id="age"><div class="label-sm">Idade</div></div>
         <div class="meta-field"><input type="text" id="height"><div class="label-sm">Altura</div></div>
@@ -499,27 +429,14 @@
         <div class="meta-field"><input type="text" id="skin"><div class="label-sm">Pele</div></div>
         <div class="meta-field"><input type="text" id="hair"><div class="label-sm">Cabelo</div></div>
     </div>
-
     <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 20px;">
         <div style="display: flex; flex-direction: column; gap: 20px;">
-            <div class="box" style="padding: 15px;">
-                <div class="label-sm">História do Personagem</div>
-                <textarea id="backstory" style="height: 400px; margin-top: 10px;"></textarea>
-            </div>
-            <div class="box" style="padding: 15px;">
-                <div class="label-sm">Aliados & Organizações</div>
-                <textarea id="allies" style="height: 150px; margin-top: 10px;"></textarea>
-            </div>
+            <div class="box" style="padding: 15px;"><div class="label-sm">História do Personagem</div><textarea id="backstory" style="height: 400px; margin-top: 10px;"></textarea></div>
+            <div class="box" style="padding: 15px;"><div class="label-sm">Aliados & Organizações</div><textarea id="allies" style="height: 150px; margin-top: 10px;"></textarea></div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 20px;">
-             <div class="box" style="padding: 15px;">
-                <div class="label-sm">Aparência</div>
-                <textarea id="appearance" style="height: 150px; margin-top: 10px;"></textarea>
-             </div>
-             <div class="box" style="padding: 15px;">
-                <div class="label-sm">Tesouro Adicional</div>
-                <textarea id="treasure" style="height: 150px; margin-top: 10px;"></textarea>
-             </div>
+             <div class="box" style="padding: 15px;"><div class="label-sm">Aparência</div><textarea id="appearance" style="height: 150px; margin-top: 10px;"></textarea></div>
+             <div class="box" style="padding: 15px;"><div class="label-sm">Tesouro Adicional</div><textarea id="treasure" style="height: 150px; margin-top: 10px;"></textarea></div>
         </div>
     </div>
 </div>
@@ -527,156 +444,112 @@
 <!-- ================= PAGE 3: SPELLS ================= -->
 <div id="page3" class="sheet">
     <div class="header-main">
-        <div class="char-name-block">
-            <input type="text" class="char-name-input sync-name">
-            <div class="label-sm">Nome do Personagem</div>
-        </div>
-        <div style="display: flex; align-items: flex-end; padding-bottom: 10px; font-size: 24px; font-family: var(--header-font);">
-            Grimório
-        </div>
+        <div class="char-name-block"><input type="text" class="char-name-input sync-name"><div class="label-sm">Nome do Personagem</div></div>
+        <div style="display: flex; align-items: flex-end; padding-bottom: 10px; font-size: 24px; font-family: var(--header-font);">Grimório</div>
     </div>
-
     <div class="spells-header">
-        <div class="spell-stat">
-            <input id="spellClass" style="color: white; border-bottom: 1px solid white; text-align: center; font-size: 16px;" placeholder="Classe">
-            <div class="label-sm" style="color: #aaa;">Classe Conjuradora</div>
-        </div>
+        <div class="spell-stat"><input id="spellClass" style="color: white; border-bottom: 1px solid white; text-align: center; font-size: 16px;" placeholder="Classe"><div class="label-sm" style="color: #aaa;">Classe Conjuradora</div></div>
         <div class="spell-stat">
             <select id="spellAbility" onchange="recalc()" style="color: white; border-bottom: 1px solid white; text-align: center; font-size: 16px;">
-                <option value="int">Inteligência</option>
-                <option value="wis">Sabedoria</option>
-                <option value="cha">Carisma</option>
-            </select>
-            <div class="label-sm" style="color: #aaa;">Atributo Chave</div>
+                <option value="int">Inteligência</option><option value="wis">Sabedoria</option><option value="cha">Carisma</option>
+            </select><div class="label-sm" style="color: #aaa;">Atributo Chave</div>
         </div>
-        <div class="spell-stat">
-            <input type="number" id="spellDC" class="spell-stat-input" value="10" oninput="toggleManual('spellDC')">
-            <div class="label-sm" style="color: #aaa;">CD Resistência</div>
-        </div>
-        <div class="spell-stat">
-            <input type="number" id="spellAtk" class="spell-stat-input" value="2" oninput="toggleManual('spellAtk')">
-            <div class="label-sm" style="color: #aaa;">Bônus Ataque</div>
-        </div>
+        <div class="spell-stat"><input type="number" id="spellDC" class="spell-stat-input" value="10" oninput="toggleManual('spellDC')"><div class="label-sm" style="color: #aaa;">CD Resistência</div></div>
+        <div class="spell-stat"><input type="number" id="spellAtk" class="spell-stat-input" value="2" oninput="toggleManual('spellAtk')"><div class="label-sm" style="color: #aaa;">Bônus Ataque</div></div>
     </div>
-
     <div class="spell-grid" id="spellContainer"></div>
 </div>
 
 <script>
-    /* CONFIG - CORRECTLY SORTED PORTUGUESE SKILL LIST */
     const attrs = ['str', 'dex', 'con', 'int', 'wis', 'cha'];
     const attrNames = {str:'Força', dex:'Destreza', con:'Constituição', int:'Inteligência', wis:'Sabedoria', cha:'Carisma'};
     const skills = [
-        {id:'acrob', name:'Acrobacia', at:'dex'}, 
-        {id:'animal', name:'Adestrar Animais', at:'wis'},
-        {id:'arcana', name:'Arcanismo', at:'int'}, 
-        {id:'athlet', name:'Atletismo', at:'str'},
-        {id:'perform', name:'Atuação', at:'cha'}, 
-        {id:'decept', name:'Enganação', at:'cha'}, 
-        {id:'stealth', name:'Furtividade', at:'dex'}, 
-        {id:'history', name:'História', at:'int'},
-        {id:'intimid', name:'Intimidação', at:'cha'},
-        {id:'insight', name:'Intuição', at:'wis'}, 
-        {id:'invest', name:'Investigação', at:'int'}, 
-        {id:'medicine', name:'Medicina', at:'wis'},
-        {id:'nature', name:'Natureza', at:'int'}, 
-        {id:'percep', name:'Percepção', at:'wis'},
-        {id:'persuas', name:'Persuasão', at:'cha'}, 
-        {id:'sleight', name:'Prestidigitação', at:'dex'},
-        {id:'religion', name:'Religião', at:'int'}, 
-        {id:'survival', name:'Sobrevivência', at:'wis'}
+        {id:'acrob', name:'Acrobacia', at:'dex'}, {id:'animal', name:'Adestrar Animais', at:'wis'},
+        {id:'arcana', name:'Arcanismo', at:'int'}, {id:'athlet', name:'Atletismo', at:'str'},
+        {id:'perform', name:'Atuação', at:'cha'}, {id:'decept', name:'Enganação', at:'cha'},
+        {id:'stealth', name:'Furtividade', at:'dex'}, {id:'history', name:'História', at:'int'},
+        {id:'intimid', name:'Intimidação', at:'cha'}, {id:'insight', name:'Intuição', at:'wis'},
+        {id:'invest', name:'Investigação', at:'int'}, {id:'medicine', name:'Medicina', at:'wis'},
+        {id:'nature', name:'Natureza', at:'int'}, {id:'percep', name:'Percepção', at:'wis'},
+        {id:'persuas', name:'Persuasão', at:'cha'}, {id:'sleight', name:'Prestidigitação', at:'dex'},
+        {id:'religion', name:'Religião', at:'int'}, {id:'survival', name:'Sobrevivência', at:'wis'}
     ];
 
-    /* INIT */
     window.onload = function() {
         buildUI();
-        loadLocal(); // Load data before recalc to preserve custom rows and manual states
+        loadLocal();
         recalc();
         setupEvents();
     };
 
     function buildUI() {
-        // Attributes Strip (INVERTED: Score Big, Mod Small)
         const st = document.getElementById('statsStrip');
         attrs.forEach(a => {
-            st.innerHTML += `
-            <div class="ability-box">
-                <div class="ability-label">${attrNames[a].toUpperCase()}</div>
-                <input type="number" class="ability-score-big" id="score_${a}" value="10" oninput="recalc(); saveLocal()">
-                <div class="ability-mod-oval" id="mod_${a}">+0</div>
-            </div>`;
+            st.innerHTML += `<div class="ability-box"><div class="ability-label">${attrNames[a].toUpperCase()}</div><input type="number" class="ability-score-big" id="score_${a}" value="10" oninput="recalc(); saveLocal()"><div class="ability-mod-oval" id="mod_${a}">+0</div></div>`;
         });
 
-        // Saves
         const sl = document.getElementById('savesList');
         attrs.forEach(a => {
-            sl.innerHTML += `
-            <div class="skill-row">
-                <div class="marker" id="save_${a}" data-val="0" onclick="toggleMarker(this, 1)"></div>
-                <div class="skill-mod" id="saveVal_${a}">+0</div>
-                <div class="skill-name">${attrNames[a]}</div>
-            </div>`;
+            sl.innerHTML += `<div class="skill-row"><div class="marker" id="save_${a}" data-val="0" onclick="toggleMarker(this, 1)"></div><div class="skill-mod" id="saveVal_${a}">+0</div><div class="skill-name">${attrNames[a]}</div></div>`;
         });
 
-        // Skills
         const skl = document.getElementById('skillsList');
         skills.forEach(s => {
-            skl.innerHTML += `
-            <div class="skill-row">
-                <div class="marker" id="skill_${s.id}" data-val="0" onclick="toggleMarker(this, 2)"></div>
-                <div class="skill-mod" id="skillVal_${s.id}">+0</div>
-                <div class="skill-name">${s.name} <span class="skill-attr">(${s.at.substring(0,3).toUpperCase()})</span></div>
-            </div>`;
+            skl.innerHTML += `<div class="skill-row"><div class="marker" id="skill_${s.id}" data-val="0" onclick="toggleMarker(this, 2)"></div><div class="skill-mod" id="skillVal_${s.id}">+0</div><div class="skill-name">${s.name} <span class="skill-attr">(${s.at.substring(0,3).toUpperCase()})</span></div></div>`;
         });
 
-        // Attacks (Default 5 rows)
         const atk = document.getElementById('atkRows');
         for(let i=0; i<5; i++) { addAtkRow(i); }
 
-        // Spells
         const spc = document.getElementById('spellContainer');
-        // Cantrips
-        spc.innerHTML += `
-        <div class="spell-lvl-box" id="spellBox0">
-            <div class="spell-lvl-head">Truques (0)</div>
-            <div class="spell-list" id="spellList0">
-                ${Array(8).fill(0).map((_,i) => `<div class="spell-row" id="row_0_${i}"><input id="cantrip${i}" style="font-size:11px;"></div>`).join('')}
-            </div>
-            <button class="btn-sm" onclick="addSpellRow(0)">+ Adicionar</button>
-        </div>`;
-        // Lvls 1-9
+        spc.innerHTML += `<div class="spell-lvl-box" id="spellBox0"><div class="spell-lvl-head">Truques (0)</div><div class="spell-list" id="spellList0">${Array(8).fill(0).map((_,i)=>`<div class="spell-row" id="row_0_${i}"><input id="cantrip${i}" style="font-size:11px;"></div>`).join('')}</div><button class="btn-sm" onclick="addSpellRow(0)">+ Adicionar</button></div>`;
+        
         for(let i=1; i<=9; i++) {
             spc.innerHTML += `
             <div class="spell-lvl-box" id="spellBox${i}">
                 <div class="spell-lvl-head">
                     <span>Nível ${i}</span>
-                    <div class="spell-slots-bubbles">
-                        ${Array(4).fill(0).map((_,j) => `<div class="slot-bubble" id="slot_${i}_${j}" onclick="toggleSlot(this)"></div>`).join('')}
+                    <div class="slots-config">
+                        <span class="label-xs">Slots:</span>
+                        <input type="number" id="slotsTotal${i}" class="slot-input-sm" value="0" min="0" max="9" onchange="updateSlots(${i})">
+                        <div class="slot-bubbles" id="slotsBubbles${i}"></div>
                     </div>
                 </div>
-                <div class="spell-list" id="spellList${i}">
-                    ${Array(i<3?7:5).fill(0).map((_,k) => renderSpellRow(i, k)).join('')}
-                </div>
+                <div class="spell-list" id="spellList${i}">${Array(i<3?7:5).fill(0).map((_,k)=>renderSpellRow(i,k)).join('')}</div>
                 <button class="btn-sm" onclick="addSpellRow(${i})">+ Adicionar</button>
             </div>`;
         }
     }
     
-    // Dynamic Row Helpers
     function renderSpellRow(lvl, idx) {
-        return `<div class="spell-row" id="row_${lvl}_${idx}">
-            <div class="marker" id="prep_${lvl}_${idx}" data-val="0" onclick="toggleMarker(this, 1)" style="width:8px; height:8px; margin-right:5px;"></div>
-            <input id="spell_${lvl}_${idx}" style="font-size:11px;">
-        </div>`;
+        return `<div class="spell-row" id="row_${lvl}_${idx}"><div class="marker" id="prep_${lvl}_${idx}" data-val="0" onclick="toggleMarker(this, 1)" style="width:8px; height:8px; margin-right:5px;"></div><input id="spell_${lvl}_${idx}" style="font-size:11px;"></div>`;
+    }
+
+    function updateSlots(lvl) {
+        const total = parseInt(document.getElementById(`slotsTotal${lvl}`).value) || 0;
+        const container = document.getElementById(`slotsBubbles${lvl}`);
+        
+        // Preserve state if possible
+        const currentUsed = [];
+        container.querySelectorAll('.slot-bubble').forEach((el, idx) => {
+            if(el.classList.contains('used')) currentUsed.push(idx);
+        });
+
+        container.innerHTML = '';
+        for(let i=0; i<total; i++) {
+            const bubble = document.createElement('div');
+            bubble.className = `slot-bubble ${currentUsed.includes(i) ? 'used' : ''}`;
+            bubble.id = `slot_${lvl}_${i}`; 
+            bubble.onclick = function() { this.classList.toggle('used'); saveLocal(); };
+            container.appendChild(bubble);
+        }
+        saveLocal();
     }
 
     function addSpellRow(lvl) {
         const list = document.getElementById(`spellList${lvl}`);
-        // Calculate new index based on child count to avoid ID conflict
-        const newIdx = list.children.length; 
-        // Simple append, IDs might have gaps if we deleted (but we don't delete yet), simple index is fine for append only
         const div = document.createElement('div');
-        div.innerHTML = renderSpellRow(lvl, newIdx);
+        div.innerHTML = renderSpellRow(lvl, list.children.length);
         list.appendChild(div.firstChild);
         saveLocal();
     }
@@ -685,15 +558,11 @@
         const tbody = document.getElementById('atkRows');
         const i = (typeof idxOverride === 'number') ? idxOverride : tbody.children.length;
         const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td><input class="atk-input" id="atkN${i}"></td>
-            <td><input class="atk-input" id="atkB${i}" style="text-align:center;"></td>
-            <td><input class="atk-input" id="atkD${i}"></td>`;
+        tr.innerHTML = `<td><input class="atk-input" id="atkN${i}"></td><td><input class="atk-input" id="atkB${i}" style="text-align:center;"></td><td><input class="atk-input" id="atkD${i}"></td>`;
         tbody.appendChild(tr);
         if(typeof idxOverride !== 'number') saveLocal();
     }
 
-    /* LOGIC */
     function getMod(sc) { return Math.floor((sc - 10) / 2); }
     function fmt(n) { return n >= 0 ? "+" + n : n; }
 
@@ -710,14 +579,19 @@
     }
 
     function recalc() {
-        // PB
+        // PB: Soma todos os números encontrados no campo (Multiclasse)
         const lvlStr = document.getElementById('classLevel').value || "";
-        const lvl = parseInt(lvlStr.match(/\d+/)) || 1;
+        const matches = lvlStr.match(/\d+/g);
+        let lvl = 0;
+        if (matches) {
+            matches.forEach(m => lvl += parseInt(m));
+        }
+        if (lvl === 0) lvl = 1;
+
         let pb = 2;
         if(lvl >= 5) pb = 3; if(lvl >= 9) pb = 4; if(lvl >= 13) pb = 5; if(lvl >= 17) pb = 6;
         document.getElementById('profBonus').innerText = fmt(pb);
 
-        // Mods
         let mods = {};
         attrs.forEach(a => {
             const sc = parseInt(document.getElementById('score_'+a).value) || 10;
@@ -726,58 +600,44 @@
             document.getElementById('mod_'+a).innerText = fmt(mod);
         });
 
-        // Saves
         attrs.forEach(a => {
             const prof = parseInt(document.getElementById('save_'+a).dataset.val);
             const val = mods[a] + (prof * pb);
             document.getElementById('saveVal_'+a).innerText = fmt(val);
         });
 
-        // Skills
         skills.forEach(s => {
-            const prof = parseInt(document.getElementById('skill_'+s.id).dataset.val); // 0, 1, 2
+            const prof = parseInt(document.getElementById('skill_'+s.id).dataset.val);
             let bonus = 0; 
             if(prof === 1) bonus = pb;
             if(prof === 2) bonus = pb * 2;
             document.getElementById('skillVal_'+s.id).innerText = fmt(mods[s.at] + bonus);
         });
 
-        // Passive Perception
         const pProf = parseInt(document.getElementById('skill_percep').dataset.val);
         let pBonus = 0; if(pProf===1) pBonus=pb; if(pProf===2) pBonus=pb*2;
         document.getElementById('passivePerc').innerText = 10 + mods['wis'] + pBonus;
 
-        // Initiative (Defaults to Dex Mod unless overridden)
         const initEl = document.getElementById('init');
         if(initEl.dataset.manual !== "true") {
-            const initVal = mods['dex'];
-            initEl.value = initVal; // Simple int, no + sign usually for input, but user can add it
+            initEl.value = mods['dex'];
         }
 
-        // Spell Stats
         const sa = document.getElementById('spellAbility').value;
         const dcVal = 8 + pb + mods[sa];
         const atkVal = pb + mods[sa];
         
         const dcEl = document.getElementById('spellDC');
-        if (dcEl.dataset.manual !== "true") {
-            dcEl.value = dcVal;
-            dcEl.classList.remove('manual-override');
-        }
+        if (dcEl.dataset.manual !== "true") { dcEl.value = dcVal; dcEl.classList.remove('manual-override'); }
         
         const atkEl = document.getElementById('spellAtk');
-        if (atkEl.dataset.manual !== "true") {
-            atkEl.value = atkVal;
-            atkEl.classList.remove('manual-override');
-        }
+        if (atkEl.dataset.manual !== "true") { atkEl.value = atkVal; atkEl.classList.remove('manual-override'); }
     }
 
-    /* ACTIONS */
     function showPage(pid) {
         document.querySelectorAll('.sheet').forEach(e => e.classList.remove('active'));
         document.querySelectorAll('.tab-btn').forEach(e => e.classList.remove('active'));
         document.getElementById(pid).classList.add('active');
-        // highlight tab logic simple
         const idx = pid==='page1'?0:(pid==='page2'?1:2);
         document.querySelectorAll('.tab-btn')[idx].classList.add('active');
     }
@@ -787,11 +647,6 @@
         v++; if(v > max) v = 0;
         el.dataset.val = v;
         recalc();
-        saveLocal();
-    }
-    
-    function toggleSlot(el) {
-        el.classList.toggle('used');
         saveLocal();
     }
     
@@ -821,23 +676,18 @@
         });
     }
 
-    /* PERSISTENCE */
     function saveLocal(imgDataOverride) {
         const data = { vals: {}, markers: {}, slots: [], charImage: null, manual: {} };
-        // Save values
         document.querySelectorAll('input, textarea, select').forEach(el => { 
             if(el.id && el.id !== 'fileUp' && el.id !== 'imgInput') data.vals[el.id] = el.value; 
         });
-        // Save markers
         document.querySelectorAll('.marker').forEach(el => { if(el.id) data.markers[el.id] = el.dataset.val; });
-        // Save slots
         document.querySelectorAll('.slot-bubble.used').forEach(el => data.slots.push(el.id));
-        // Save Manual States
+        
         if(document.getElementById('spellDC').dataset.manual === "true") data.manual['spellDC'] = true;
         if(document.getElementById('spellAtk').dataset.manual === "true") data.manual['spellAtk'] = true;
         if(document.getElementById('init').dataset.manual === "true") data.manual['init'] = true;
 
-        // Save Image
         if (imgDataOverride) {
             data.charImage = imgDataOverride;
         } else {
@@ -849,10 +699,7 @@
         localStorage.setItem('dndSheetOfficial', JSON.stringify(data));
     }
     
-    function manualSave() {
-        saveLocal();
-        alert("Ficha salva no navegador com sucesso!");
-    }
+    function manualSave() { saveLocal(); alert("Ficha salva no navegador com sucesso!"); }
 
     function loadLocal() {
         const d = localStorage.getItem('dndSheetOfficial');
@@ -862,9 +709,8 @@
     function applyData(d) {
         if(!d) return;
         
-        // 1. Recreate Dynamic Rows
-        let maxSpells = {}; 
-        let maxAtk = 4;
+        // Dynamic Rows
+        let maxSpells = {}; let maxAtk = 4;
         const allKeys = [...Object.keys(d.vals || {}), ...Object.keys(d.markers || {})];
         allKeys.forEach(k => {
             const spellMatch = k.match(/_(?:spell|prep)_(\d+)_(\d+)/);
@@ -877,10 +723,7 @@
                 }
             }
             const atkMatch = k.match(/atk[NBD](\d+)/);
-            if(atkMatch) {
-                const i = parseInt(atkMatch[1]);
-                if(i > maxAtk) maxAtk = i;
-            }
+            if(atkMatch) { const i = parseInt(atkMatch[1]); if(i > maxAtk) maxAtk = i; }
         });
 
         const currentAtks = document.getElementById('atkRows').children.length;
@@ -898,13 +741,16 @@
             }
         }
 
-        // 2. Fill Data
+        // Fill Data
         for(let k in d.vals) { const el=document.getElementById(k); if(el) el.value=d.vals[k]; }
+        
+        // Re-generate bubbles based on loaded slot totals
+        for(let i=1; i<=9; i++) { updateSlots(i); }
+
         for(let k in d.markers) { const el=document.getElementById(k); if(el) el.dataset.val=d.markers[k]; }
         document.querySelectorAll('.slot-bubble').forEach(e => e.classList.remove('used'));
         if(d.slots) d.slots.forEach(id => { const el=document.getElementById(id); if(el) el.classList.add('used'); });
         
-        // Restore Manual States
         if(d.manual) {
             ['spellDC', 'spellAtk', 'init'].forEach(id => {
                 if(d.manual[id]) {
@@ -915,7 +761,6 @@
             });
         }
 
-        // Restore Image
         if(d.charImage) {
             const container = document.getElementById('charImageContainer');
             container.style.backgroundImage = `url(${d.charImage})`;
@@ -940,37 +785,28 @@
         r.readAsText(f);
     }
 
-    function resetShort() {
-        if(confirm("Descanso Curto: Recuperar Magias de Bruxo e Habilidades?")) {
-            saveLocal();
-        }
-    }
+    function resetShort() { if(confirm("Descanso Curto: Recuperar Magias de Bruxo e Habilidades?")) { saveLocal(); } }
+    
     function resetLong() {
         if(confirm("Descanso Longo: Recuperar PV, Slots e Metade dos DV?")) {
-            // HP
             const max = document.getElementById('hpMax').value;
             if(max) document.getElementById('hpCurrent').value = max;
             document.getElementById('hpTemp').value = '';
             
-            // Slots
             document.querySelectorAll('.slot-bubble').forEach(e => e.classList.remove('used'));
             
-            // Recover Half Hit Dice (Official Rule)
             const hdTotalStr = document.getElementById('hdTotal').value;
             const hdCurrentEl = document.getElementById('hdCurrent');
             
-            // Try to parse total dice (e.g. "5d8" -> 5)
             const hdMatch = hdTotalStr.match(/(\d+)/);
             if(hdMatch) {
                 const total = parseInt(hdMatch[1]);
                 let current = parseInt(hdCurrentEl.value) || 0;
                 const recover = Math.max(1, Math.floor(total / 2));
-                
                 current += recover;
                 if(current > total) current = total;
                 hdCurrentEl.value = current;
             } else if (hdTotalStr) {
-                // If user just typed "5", assume that is total
                 const total = parseInt(hdTotalStr);
                 if(!isNaN(total)) {
                     let current = parseInt(hdCurrentEl.value) || 0;
@@ -979,13 +815,10 @@
                     hdCurrentEl.value = current;
                 }
             }
-
             saveLocal();
         }
     }
-
 </script>
 
 </body>
-
 </html>
